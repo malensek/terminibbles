@@ -15,7 +15,7 @@
 #define BODY_CHAR  '|'
 #define FOOD_CHAR  ':'
 #define HEAD_CHAR  'O'
-#define BLOCK_CHAR 'X'
+#define WALL_CHAR  'X'
 
 char *difficulties[] = {
     "Easy",
@@ -98,6 +98,8 @@ void draw_tile(int y, int x, int tile)
         display = HEAD_CHAR | A_BOLD;
     } else if (tile == TILE_EMPTY) {
         display = BLANK_CHAR | A_NORMAL;
+    } else if (tile == TILE_WALL) {
+        display = WALL_CHAR | A_NORMAL;
     } else {
         /* Snake body tiles don't have a specific identifier, so if nothing else
          * matches we can assume this is a body tile. */
@@ -281,6 +283,7 @@ int main(int argc, char **argv)
     init_pair(-TILE_BODY, COLOR_GREEN, COLOR_GREEN);
     init_pair(-TILE_FOOD, COLOR_RED, COLOR_RED);
     init_pair(-TILE_HEAD, COLOR_GREEN, COLOR_GREEN);
+    init_pair(-TILE_WALL, COLOR_BLUE, COLOR_BLUE);
 
     /* Don't display the cursor */
     curs_set(0);

@@ -93,8 +93,9 @@ int update_board(struct game_board *board) {
     int old_size = board->size;
 
     /* Are we dead yet? */
-    if (new_head < 0 || new_head >= BOARD_SZ || board->tile[new_head] >= 0 ||
-        abs(board->head % BOARD_W - new_head % BOARD_W) > 1) {
+    if (new_head < 0 || new_head >= BOARD_SZ ||
+            board->tile[new_head] >= 0 || board->tile[new_head] == TILE_WALL ||
+            abs(board->head % BOARD_W - new_head % BOARD_W) > 1) {
         return -1;
     }
 
