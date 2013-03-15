@@ -1,4 +1,3 @@
-#include "terminibbles.h"
 #include <ctype.h>
 #include <curses.h>
 #include <menu.h>
@@ -12,12 +11,28 @@
 
 #include "gameboard.h"
 
+#define BLANK_CHAR ' '
+#define BODY_CHAR  '|'
+#define FOOD_CHAR  ':'
+#define HEAD_CHAR  'O'
+#define BLOCK_CHAR 'X'
+
+char *difficulties[] = {
+    "Easy",
+    "Medium",
+    "Hard",
+    "Extreme Zesty Sour Cream and Cheddar",
+};
+
 WINDOW *game_win;
 struct game_board board;
 bool paused = false;
 bool game_over = false;
 int score = 0;
 
+/*
+ * Handles the actions associated with keypresses.
+ */
 void kbd_events()
 {
     int key = getch();
@@ -95,6 +110,9 @@ void draw_tile(int y, int x, int tile)
     (void) waddch(game_win, display);
 }
 
+/*
+ * Draws the entire "gameboard" -- snake, food, obstacles.
+ */
 void draw_board()
 {
     int y, x, tile;
@@ -106,16 +124,17 @@ void draw_board()
     }
 }
 
+/*
+ * Draws the player's current score (number of food items eaten)
+ */
 void draw_score()
 {
-    (void) wattrset(game_win, COLOR_PAIR(1));
-
-    int y, x;
-    getyx(game_win, y, x);
-
-    mvwprintw(game_win, 0, x - 20, "| Score: %4d |", score);
+    mvwprintw(game_win, 0, BOARD_W * 2 - 20, "| Score: %4d |", score);
 }
 
+/*
+ * Write a fancy title splash screen using gameboard pieces.
+ */
 void splash()
 {
     char splash[] = {
@@ -128,27 +147,35 @@ void splash()
     };
 
     int offset = BOARD_W * 3; /* three lines from the top */
-    for (int i = 0; i < sizeof(splash) * 8; ++i) {
+    int i;
+    for (i = 0; i < sizeof(splash) * 8; ++i) {
         if ((splash[i / 8] << i % 8) & 0x80) {
             board.tile[offset + i] = TILE_BODY;
         }
     }
 }
 
+/*
+ * Retrieve the game window's y coordinate.
+ */
 int winy()
 {
-    int max_row, max_col;
-    getmaxyx(stdscr, max_row, max_col);
+    int max_row = getmaxy(stdscr);
     return (max_row - BOARD_H) / 2 - 1;
 }
 
+/*
+ * Retrieve the game window's x coordinate.
+ */
 int winx()
 {
-    int max_row, max_col;
-    getmaxyx(stdscr, max_row, max_col);
+    int max_col = getmaxx(stdscr);
     return (max_col - BOARD_W * 2) / 2 - 1;
 }
 
+/*
+ * Make sure we've got enough room to work with in the terminal.
+ */
 void checksize()
 {
     if (winy() < 0 || winx() < 0) {
@@ -158,6 +185,9 @@ void checksize()
     }
 }
 
+/*
+ * Completely redraw the game.  Generally needed when we get a SIGWINCH.
+ */
 void refreshwin()
 {
     clear();
@@ -172,6 +202,9 @@ void refreshwin()
     wrefresh(game_win);
 }
 
+/*
+ * Avoid breaking terminals when exiting.
+ */
 void cleanup()
 {
     endwin();
@@ -180,6 +213,61 @@ void cleanup()
 
 int main(int argc, char **argv)
 {
+    int difficulty = 1;
+    char *level_name = NULL;
+    int flag;
+    bool error = false; /* flag for showing usage information */
+    opterr = 0; /* prevents getopt from displaying its own error messages */
+
+    while ((flag = getopt(argc, argv, "d:l:")) != -1 && !error) {
+        switch (flag) {
+        case 'd':
+            difficulty = atoi(optarg);
+            if (difficulty < 1 || difficulty > 4) {
+                error = true;
+            }
+            break;
+
+        case 'l':
+            level_name = optarg;
+            break;
+
+        case '?':
+            error = true;
+            if (optopt == 'd' || optopt == 'l') {
+                fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+            }
+            else if (isprint(optopt)) {
+                fprintf(stderr, "Unknown option '-%c'. \n", optopt);
+            }
+            else {
+                fprintf(stderr, "Unknown option character '\\x%x'.\n", optopt);
+            }
+            break;
+
+        default:
+            abort();
+        }
+    }
+
+    if (error) {
+        printf("Usage: %s [-d 1|2|3] [-l level_file]\n", argv[0]);
+        printf("Difficulty (-d):\n"\
+               "    1 easy\n" \
+               "    2 medium\n" \
+               "    3 hard\n\n" \
+               "Controls:\n" \
+               "    Movement: WASD, HJKL, Arrow Keys\n"
+               "    Pause:    p\n"
+               "    Quit:     q\n"
+               "\n");
+        return EXIT_FAILURE;
+    }
+
+    /* 0 = easy, 1 = medium, 2 = hard */
+    difficulty--;
+
+    /* Start up ncurses stuff. */
     initscr();
 
     if (has_colors()) {
@@ -216,20 +304,25 @@ int main(int argc, char **argv)
     box(game_win, 0, 0);
     draw_score();
 
+    /* Show the splash screen */
     load_level(NULL, &board);
     init_board(&board);
     splash();
     draw_board();
 
-    wrefresh(game_win);
 
-    for (int i = 3; i > 0; --i) {
+    /* The countdown! */
+    int i;
+    for (i = 3; i > 0; --i) {
         mvwprintw(game_win, 15, BOARD_W - 2, "%d...", i);
         wrefresh(game_win);
         sleep(1);
     }
 
-    load_level(NULL, &board);
+    if (load_level(level_name, &board) < 0) {
+        fprintf(stderr, "Could not load level file!\n");
+        cleanup();
+    }
     init_board(&board);
     draw_board();
     box(game_win, 0, 0);
@@ -256,11 +349,16 @@ int main(int argc, char **argv)
         draw_board();
         wrefresh(game_win);
 
-        usleep(100000);
+        usleep(100000 - difficulty * 25000);
     }
 
     endwin();
     printf("Game Over!\n");
+    printf("Difficulty: %s\n", difficulties[difficulty]);
     printf("Score: %d\n", score);
+    if (score == 0) {
+        printf("...seriously?  Zero points?\n");
+    }
+
     return EXIT_SUCCESS;
 }

@@ -1,9 +1,10 @@
-# terminibbles makefile
-
 bin=terminibbles
 
-CC=clang -Os
-CARGS=-lncurses -lmenu
+prefix ?= /usr/local
+bindir ?= $(prefix)/bin
+leveldir ?= $(prefix)/share/$(bin)/
+
+CFLAGS=-Wall -lncurses -lmenu
 
 tnibbles_src=gameboard.c terminibbles.c
 tnibbles_obj=$(tnibbles_src:.c=.o)
@@ -11,7 +12,10 @@ tnibbles_obj=$(tnibbles_src:.c=.o)
 all: terminibbles
 
 terminibbles: $(tnibbles_obj)
-	$(CC) $(CARGS) $(tnibbles_obj) -o $(bin)
+	$(CC) $(CFLAGS) $(tnibbles_obj) -o $(bin)
+
+install: all
+	install $(bin) $(bindir)
 
 depend:
 	makedepend -Y $(tnibbles_src)
@@ -26,4 +30,4 @@ clean:
 	rm -f $(bin)
 
 gameboard.o: gameboard.h
-terminibbles.o: terminibbles.h gameboard.h
+terminibbles.o: gameboard.h

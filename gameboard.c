@@ -11,7 +11,8 @@
  */
 int load_level(char *filename, struct game_board *board)
 {
-    for (int i = 0; i < BOARD_SZ; ++i) {
+    int i;
+    for (i = 0; i < BOARD_SZ; ++i) {
         board->tile[i] = TILE_EMPTY;
     }
 
@@ -28,7 +29,8 @@ int load_level(char *filename, struct game_board *board)
     char line[BOARD_W];
     int linenum = 0;
     while ((fgets(line, sizeof(line), f)) != NULL) {
-        for (int ch = 0; ch < sizeof(line); ++ch) {
+        int ch;
+        for (ch = 0; ch < sizeof(line); ++ch) {
             int tileno = linenum * BOARD_W + ch;
             char flag = toupper(line[ch]);
 
@@ -69,7 +71,8 @@ void init_board(struct game_board *board)
     int head = board_idx(head_y, head_x);
     board->head = head;
     int last = head;
-    for (int i = 1; i < INIT_SNAKE_SZ; ++i) {
+    int i;
+    for (i = 1; i < INIT_SNAKE_SZ; ++i) {
         board->tile[head - i] = last;
         last = head - i;
     }
