@@ -19,7 +19,7 @@
 
 /* Increase difficulty level every NEXT_DIFFICULTY points in progressive
  * difficulty mode */
-#define NEXT_DIFFICULTY 5
+#define NEXT_DIFFICULTY 25
 
 char *difficulties[] = {
     "Easy",
@@ -269,16 +269,19 @@ int main(int argc, char **argv)
     }
 
     if (error) {
-        printf("Usage: %s [-d 123] [-l level_file] [-q]\n", argv[0]);
-        printf("Difficulty (-d):\n"\
+        printf("Usage: %s [-d 123] [-l level_file] [-p] [-q]\n", argv[0]);
+        printf("-d: set difficulty:\n"\
                "    1 easy\n" \
                "    2 medium\n" \
                "    3 hard\n\n" \
+               "-l: load level file\n\n"
+               "-p: enable progressive difficulty\n" \
+               "    (increases difficulty every 25 points)\n\n" \
+               "-q: disable 3, 2, 1 countdown\n\n" \
                "Controls:\n" \
                "    Movement: WASD, HJKL, Arrow Keys\n"
                "    Pause:    p\n"
                "    Quit:     q\n\n"
-               " -q (quiet): disable 3, 2, 1 countdown\n\n" \
                "");
         return EXIT_FAILURE;
     }
