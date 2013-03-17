@@ -124,6 +124,7 @@ void draw_board()
             draw_tile(y, x, tile);
         }
     }
+    (void) wattrset(game_win, COLOR_PAIR(-TILE_EMPTY));
 }
 
 /*
@@ -312,7 +313,6 @@ int main(int argc, char **argv)
     init_board(&board);
     splash();
     draw_board();
-
 
     /* The countdown! */
     int i;
