@@ -216,13 +216,15 @@ void cleanup()
 
 int main(int argc, char **argv)
 {
+    bool countdown = true;
     int difficulty = 1;
     char *level_name = NULL;
+
     int flag;
     bool error = false; /* flag for showing usage information */
     opterr = 0; /* prevents getopt from displaying its own error messages */
 
-    while ((flag = getopt(argc, argv, "d:l:")) != -1 && !error) {
+    while ((flag = getopt(argc, argv, "d:l:q")) != -1 && !error) {
         switch (flag) {
         case 'd':
             difficulty = atoi(optarg);
@@ -233,6 +235,10 @@ int main(int argc, char **argv)
 
         case 'l':
             level_name = optarg;
+            break;
+
+        case 'q':
+            countdown = false;
             break;
 
         case '?':
@@ -254,7 +260,7 @@ int main(int argc, char **argv)
     }
 
     if (error) {
-        printf("Usage: %s [-d 1|2|3] [-l level_file]\n", argv[0]);
+        printf("Usage: %s [-d 123] [-l level_file] [-q]\n", argv[0]);
         printf("Difficulty (-d):\n"\
                "    1 easy\n" \
                "    2 medium\n" \
@@ -262,8 +268,9 @@ int main(int argc, char **argv)
                "Controls:\n" \
                "    Movement: WASD, HJKL, Arrow Keys\n"
                "    Pause:    p\n"
-               "    Quit:     q\n"
-               "\n");
+               "    Quit:     q\n\n"
+               " -q (quiet): disable 3, 2, 1 countdown\n\n" \
+               "");
         return EXIT_FAILURE;
     }
 
@@ -314,12 +321,14 @@ int main(int argc, char **argv)
     splash();
     draw_board();
 
-    /* The countdown! */
-    int i;
-    for (i = 3; i > 0; --i) {
-        mvwprintw(game_win, 15, BOARD_W - 2, "%d...", i);
-        wrefresh(game_win);
-        sleep(1);
+    if (countdown) {
+        /* The countdown! */
+        int i;
+        for (i = 3; i > 0; --i) {
+            mvwprintw(game_win, 15, BOARD_W - 2, "%d...", i);
+            wrefresh(game_win);
+            sleep(1);
+        }
     }
 
     if (load_level(level_name, &board) < 0) {
