@@ -17,6 +17,10 @@
 #define HEAD_CHAR  'O'
 #define WALL_CHAR  'X'
 
+/* Increase difficulty level every NEXT_DIFFICULTY points in progressive
+ * difficulty mode */
+#define NEXT_DIFFICULTY 5
+
 char *difficulties[] = {
     "Easy",
     "Medium",
@@ -219,12 +223,13 @@ int main(int argc, char **argv)
     bool countdown = true;
     int difficulty = 1;
     char *level_name = NULL;
+    bool progressive = false;
 
     int flag;
     bool error = false; /* flag for showing usage information */
     opterr = 0; /* prevents getopt from displaying its own error messages */
 
-    while ((flag = getopt(argc, argv, "d:l:q")) != -1 && !error) {
+    while ((flag = getopt(argc, argv, "d:l:pq")) != -1 && !error) {
         switch (flag) {
         case 'd':
             difficulty = atoi(optarg);
@@ -235,6 +240,10 @@ int main(int argc, char **argv)
 
         case 'l':
             level_name = optarg;
+            break;
+
+        case 'p':
+            progressive = true;
             break;
 
         case 'q':
@@ -356,6 +365,12 @@ int main(int argc, char **argv)
         } else if (state > 0) {
             score += state;
             draw_score();
+
+            if (progressive) {
+                if (score % NEXT_DIFFICULTY == 0 && difficulty < 4) {
+                    difficulty++;
+                }
+            }
         }
 
         draw_board();
