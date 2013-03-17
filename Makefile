@@ -4,7 +4,7 @@ prefix ?= /usr/local
 bindir ?= $(prefix)/bin
 leveldir ?= $(prefix)/share/$(bin)/
 
-CFLAGS=-Wall -lncurses -lmenu
+CFLAGS=-Wall -lncurses
 
 tnibbles_src=gameboard.c terminibbles.c
 tnibbles_obj=$(tnibbles_src:.c=.o)
