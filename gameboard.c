@@ -26,9 +26,9 @@ int load_level(char *filename, struct game_board *board)
         return -1;
     }
 
-    char line[BOARD_W];
+    char line[BOARD_W + 1];
     int linenum = 0;
-    while ((fgets(line, sizeof(line), f)) != NULL) {
+    while ((fgets(line, sizeof(line), f)) != NULL && linenum < BOARD_H) {
         int ch;
         for (ch = 0; ch < sizeof(line); ++ch) {
             int tileno = linenum * BOARD_W + ch;
