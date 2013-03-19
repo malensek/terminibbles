@@ -1,3 +1,4 @@
+/* Copyright (c) 2013 Matthew Malensek.  See LICENSE file for details. */
 #include "gameboard.h"
 
 #include <ctype.h>
