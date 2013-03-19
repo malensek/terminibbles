@@ -9,13 +9,15 @@ CFLAGS=-Wall -lncurses
 tnibbles_src=gameboard.c terminibbles.c
 tnibbles_obj=$(tnibbles_src:.c=.o)
 
-all: terminibbles
+all: $(bin)
 
-terminibbles: $(tnibbles_obj)
-	$(CC) $(CFLAGS) $(tnibbles_obj) -o $(bin)
+$(bin): $(tnibbles_obj)
+	$(CC) $(CFLAGS) $(tnibbles_obj) -o $@
 
 install: all
 	install $(bin) $(bindir)
+	install -d $(leveldir)
+	install -m 644 ./levels/* $(leveldir)
 
 depend:
 	makedepend -Y $(tnibbles_src)
