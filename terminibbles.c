@@ -26,7 +26,9 @@
 #define NEXT_DIFFICULTY 25
 
 /* System level directory */
+#ifndef LEVEL_DIR
 #define LEVEL_DIR "./levels"
+#endif
 
 char *difficulties[] = {
     "Easy",
@@ -230,9 +232,12 @@ void cleanup()
  */
 void print_levels() {
     /* Print installed levels */
+    printf("Levels installed: (%s)\n", LEVEL_DIR);
+
     DIR *dir;
     if (!(dir = opendir(LEVEL_DIR))) {
         perror("list_levels");
+        return;
     }
 
     struct dirent *dent;
@@ -241,7 +246,6 @@ void print_levels() {
             printf("%s\n", dent->d_name);
         }
     }
-
 }
 
 int main(int argc, char **argv)
