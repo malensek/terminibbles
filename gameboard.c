@@ -9,8 +9,10 @@
 /*
  * Clear the given gameboard, then read the given level file and place its tiles
  * onto the gameboard.
+ *
+ * Returns true if successful, false otherwise.
  */
-int load_level(char *filename, struct game_board *board)
+bool load_level(char *filename, struct game_board *board)
 {
     int i;
     for (i = 0; i < BOARD_SZ; ++i) {
@@ -19,19 +21,19 @@ int load_level(char *filename, struct game_board *board)
 
     if (filename == NULL) {
         /* Loading a blank level; we're done here. */
-        return 0;
+        return true;
     }
 
-    FILE *f = fopen(filename, "rt");
+    FILE *f = fopen(filename, "r");
     if (f == NULL) {
-        return -1;
+        return false;
     }
 
     char line[BOARD_W + 1];
     int linenum = 0;
-    while ((fgets(line, sizeof(line), f)) != NULL && linenum < BOARD_H) {
+    while ((fgets(line, sizeof line, f)) != NULL && linenum < BOARD_H) {
         int ch;
-        for (ch = 0; ch < sizeof(line); ++ch) {
+        for (ch = 0; ch < sizeof line; ++ch) {
             int tileno = linenum * BOARD_W + ch;
             char flag = toupper(line[ch]);
 
@@ -43,12 +45,12 @@ int load_level(char *filename, struct game_board *board)
 
         /* Throw away any additional characters beyond the line size limit */
         while (strchr(line, '\n') == NULL) {
-            fgets(line, sizeof(line), f);
+            fgets(line, sizeof line, f);
         }
     }
     fclose(f);
 
-    return 0;
+    return true;
 }
 
 /*
