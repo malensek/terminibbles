@@ -1,6 +1,9 @@
 /* Copyright (c) 2013 Matthew Malensek.  See LICENSE file for details. */
 #include <ctype.h>
 #include <curses.h>
+#include <dirent.h>
+#include <errno.h>
+#include <limits.h>
 #include <menu.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -21,6 +24,9 @@
 /* Increase difficulty level every NEXT_DIFFICULTY points in progressive
  * difficulty mode */
 #define NEXT_DIFFICULTY 25
+
+/* System level directory */
+#define LEVEL_DIR "./levels"
 
 char *difficulties[] = {
     "Easy",
@@ -156,7 +162,7 @@ void splash()
 
     int offset = BOARD_W * 3; /* three lines from the top */
     int i;
-    for (i = 0; i < sizeof(splash) * 8; ++i) {
+    for (i = 0; i < sizeof splash * 8; ++i) {
         if ((splash[i / 8] << i % 8) & 0x80) {
             board.tile[offset + i] = TILE_BODY;
         }
@@ -219,6 +225,25 @@ void cleanup()
     exit(EXIT_SUCCESS);
 }
 
+/*
+ * Print levels installed in the system level directory.
+ */
+void print_levels() {
+    /* Print installed levels */
+    DIR *dir;
+    if (!(dir = opendir(LEVEL_DIR))) {
+        perror("list_levels");
+    }
+
+    struct dirent *dent;
+    while ((dent = readdir(dir))) {
+        if (dent->d_name[0] != '.') {
+            printf("%s\n", dent->d_name);
+        }
+    }
+
+}
+
 int main(int argc, char **argv)
 {
     int difficulty = 1;
@@ -258,15 +283,18 @@ int main(int argc, char **argv)
 
         case '?':
             error = true;
-            if (optopt == 'd' || optopt == 'l') {
+
+            if (optopt == 'l') {
+                print_levels();
+                return EXIT_SUCCESS;
+            } else if (optopt == 'd') {
                 fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-            }
-            else if (isprint(optopt)) {
+            } else if (isprint(optopt)) {
                 fprintf(stderr, "Unknown option '-%c'. \n", optopt);
-            }
-            else {
+            } else {
                 fprintf(stderr, "Unknown option character '\\x%x'.\n", optopt);
             }
+
             break;
 
         default:
@@ -341,6 +369,28 @@ int main(int argc, char **argv)
     splash();
     draw_board();
 
+    /* Make sure the level exists before doing the countdown */
+    if (!load_level(level_name, &board)) {
+        int err1 = errno;
+
+        /* Try the system level directory */
+        char name[NAME_MAX];
+        strcat(name, LEVEL_DIR);
+        strcat(name, "/");
+        strcat(name, level_name);
+        if (!load_level(name, &board)) {
+            int err2 = errno;
+
+            /* Give up */
+            endwin();
+            errno = err1;
+            perror("load_level");
+            errno = err2;
+            perror("load_level (LEVEL_DIR)");
+            exit(EXIT_FAILURE);
+        }
+    }
+
     if (countdown) {
         /* The countdown! */
         int i;
@@ -351,10 +401,6 @@ int main(int argc, char **argv)
         }
     }
 
-    if (load_level(level_name, &board) < 0) {
-        fprintf(stderr, "Could not load level file!\n");
-        cleanup();
-    }
     init_board(&board);
     draw_board();
     box(game_win, 0, 0);
