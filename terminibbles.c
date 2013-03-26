@@ -221,16 +221,17 @@ void cleanup()
 
 int main(int argc, char **argv)
 {
-    bool countdown = true;
     int difficulty = 1;
     char *level_name = NULL;
     bool progressive = false;
+    bool countdown = true;
+    bool sound = false;
 
     int flag;
     bool error = false; /* flag for showing usage information */
     opterr = 0; /* prevents getopt from displaying its own error messages */
 
-    while ((flag = getopt(argc, argv, "d:l:pq")) != -1 && !error) {
+    while ((flag = getopt(argc, argv, "d:l:pqs")) != -1 && !error) {
         switch (flag) {
         case 'd':
             difficulty = atoi(optarg);
@@ -249,6 +250,10 @@ int main(int argc, char **argv)
 
         case 'q':
             countdown = false;
+            break;
+
+        case 's':
+            sound = true;
             break;
 
         case '?':
@@ -270,15 +275,17 @@ int main(int argc, char **argv)
     }
 
     if (error) {
-        printf("Usage: %s [-d 123] [-l level_file] [-p] [-q]\n", argv[0]);
-        printf("-d: set difficulty:\n"\
+        printf("Usage: %s [-pqs] [-d 123] [-l level_file]\n", argv[0]);
+        printf("" \
+               "-p: enable progressive difficulty\n" \
+               "    (increases difficulty every 25 points)\n\n" \
+               "-q: disable 3, 2, 1 countdown\n\n" \
+               "-s: enable sound (terminal bell)\n\n" \
+               "-d: set difficulty:\n"\
                "    1 easy\n" \
                "    2 medium\n" \
                "    3 hard\n\n" \
                "-l: load level file\n\n"
-               "-p: enable progressive difficulty\n" \
-               "    (increases difficulty every 25 points)\n\n" \
-               "-q: disable 3, 2, 1 countdown\n\n" \
                "Controls:\n" \
                "    Movement: WASD, HJKL, Arrow Keys\n"
                "    Pause:    p\n"
@@ -369,6 +376,10 @@ int main(int argc, char **argv)
         } else if (state > 0) {
             score += state;
             draw_score();
+
+            if (sound) {
+                printf("\a");
+            }
 
             if (progressive) {
                 if (score % NEXT_DIFFICULTY == 0 && difficulty < 4) {
