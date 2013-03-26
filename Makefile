@@ -2,10 +2,10 @@ bin=terminibbles
 
 prefix ?= /usr/local
 bindir ?= $(prefix)/bin
-leveldir ?= $(prefix)/share/$(bin)
+leveldir ?= $(prefix)/share/$(bin)/levels
 mandir ?= $(prefix)/share/man
 
-CFLAGS=-Wall -lncurses
+CFLAGS=-Wall -lncurses -D'LEVEL_DIR="$(leveldir)"'
 
 tnibbles_src=gameboard.c terminibbles.c
 tnibbles_obj=$(tnibbles_src:.c=.o)
