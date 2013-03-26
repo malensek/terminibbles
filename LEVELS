@@ -5,5 +5,5 @@ place wall (obstacle) tiles on the game board.  The game board is 39 columns by
 Walls are represented by X characters; all other characters are assumed to be
 blank space.  Characters beyond 39 columns or 22 lines are ignored.
 
-blank.lvl provides a blank level file with some character-based guides to
-delineate the column/line limits.
+The "blank" level provides a blank level file with some character-based guides
+to delineate the column/line limits.
