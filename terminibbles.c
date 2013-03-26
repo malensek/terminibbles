@@ -303,7 +303,7 @@ int main(int argc, char **argv)
     }
 
     if (error) {
-        printf("Usage: %s [-pqs] [-d 123] [-l level_file]\n", argv[0]);
+        printf("Usage: %s [-pqs] [-d 123] [-l level-file]\n", argv[0]);
         printf("" \
                "-p: enable progressive difficulty\n" \
                "    (increases difficulty every 25 points)\n\n" \
@@ -313,7 +313,7 @@ int main(int argc, char **argv)
                "    1 easy\n" \
                "    2 medium\n" \
                "    3 hard\n\n" \
-               "-l: load level file\n\n"
+               "-l: load level-file.  Leave blank to list levels.\n\n"
                "Controls:\n" \
                "    Movement: WASD, HJKL, Arrow Keys\n"
                "    Pause:    p\n"
