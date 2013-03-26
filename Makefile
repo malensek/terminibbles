@@ -2,7 +2,8 @@ bin=terminibbles
 
 prefix ?= /usr/local
 bindir ?= $(prefix)/bin
-leveldir ?= $(prefix)/share/$(bin)/
+leveldir ?= $(prefix)/share/$(bin)
+mandir ?= $(prefix)/share/man
 
 CFLAGS=-Wall -lncurses
 
@@ -18,6 +19,7 @@ install: all
 	install $(bin) $(bindir)
 	install -d $(leveldir)
 	install -m 644 ./levels/* $(leveldir)
+	install terminibbles.1 $(mandir)/man1/
 
 depend:
 	makedepend -Y $(tnibbles_src)
