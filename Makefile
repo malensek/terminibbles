@@ -1,14 +1,18 @@
 bin=terminibbles
+version=1.0
+distname=$(bin)-$(version)
 
-prefix ?= /usr/local
-bindir ?= $(prefix)/bin
-leveldir ?= $(prefix)/share/$(bin)/levels
-mandir ?= $(prefix)/share/man
+PREFIX ?= /usr/local
+BINDIR ?= $(PREFIX)/bin
+LEVELDIR ?= $(PREFIX)/share/$(bin)/levels
+MANDIR ?= $(PREFIX)/share/man
 
-CFLAGS=-Wall -lncurses -D'LEVEL_DIR="$(leveldir)"'
+CFLAGS=-Wall -lncurses -D'LEVEL_DIR="$(LEVELDIR)"' -D'VERSION="$(version)"'
 
 tnibbles_src=gameboard.c terminibbles.c
 tnibbles_obj=$(tnibbles_src:.c=.o)
+distrib=$(tnibbles_src) gameboard.h terminibbles.1 levels \
+		LICENSE LEVELS README.md Makefile
 
 all: $(bin)
 
@@ -16,21 +20,23 @@ $(bin): $(tnibbles_obj)
 	$(CC) $(CFLAGS) $(tnibbles_obj) -o $@
 
 install: all
-	install $(bin) $(bindir)
-	install -d $(leveldir)
-	install -m 644 ./levels/* $(leveldir)
-	install terminibbles.1 $(mandir)/man1/
-
-depend:
-	makedepend -Y $(tnibbles_src)
+	install -d $(DESTDIR)/$(BINDIR)
+	install $(bin) $(DESTDIR)/$(BINDIR)
+	install -d $(DESTDIR)/$(LEVELDIR)
+	install -m644 ./levels/* $(DESTDIR)/$(LEVELDIR)
+	install -d $(DESTDIR)/$(MANDIR)/man1/
+	install terminibbles.1 $(DESTDIR)/$(MANDIR)/man1/
 
 tar: clean
-	tar -czf $(bin).tar.gz *
+	mkdir ./$(distname)
+	cp -r $(distrib) ./$(distname)
+	tar -czf $(distname).tar.gz ./$(distname)
+	rm -r ./$(distname)
 
 clean:
 	rm -f $(tnibbles_obj)
 	rm -f makefile.bak
-	rm -f $(bin).tar.gz
+	rm -f $(distname).tar.gz
 	rm -f $(bin)
 
 gameboard.o: gameboard.h
