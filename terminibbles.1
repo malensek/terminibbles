@@ -46,7 +46,9 @@ A level file is composed of plain text instructions on where to place obstacle
 tiles on the game board.  The game board is 39 columns by 22 lines.
 
 Walls are represented by X characters; all other characters are assumed to be
-blank space.  Characters beyond 39 columns or 22 lines are ignored.
+blank space.  Characters beyond 39 columns or 22 lines are ignored.  Remember
+that enclosed areas must be filled in with wall tiles; otherwise food could
+become unreachable.
 
 See the "blank" level file for an example with column/row guides.
 .SH AUTHOR
