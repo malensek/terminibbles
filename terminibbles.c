@@ -15,6 +15,10 @@
 
 #include "gameboard.h"
 
+#ifndef VERSION
+#define VERSION "0.0"
+#endif
+
 #define BLANK_CHAR ' '
 #define BODY_CHAR  '|'
 #define FOOD_CHAR  ':'
@@ -260,7 +264,7 @@ int main(int argc, char **argv)
     bool error = false; /* flag for showing usage information */
     opterr = 0; /* prevents getopt from displaying its own error messages */
 
-    while ((flag = getopt(argc, argv, "d:l:pqs")) != -1 && !error) {
+    while ((flag = getopt(argc, argv, "d:l:pqsV")) != -1 && !error) {
         switch (flag) {
         case 'd':
             difficulty = atoi(optarg);
@@ -285,6 +289,11 @@ int main(int argc, char **argv)
             sound = true;
             break;
 
+        case 'V':
+            printf("terminibbles %s\n", VERSION);
+            printf("Compiled on %s at %s\n", __DATE__, __TIME__);
+            return EXIT_SUCCESS;
+
         case '?':
             error = true;
 
@@ -307,17 +316,17 @@ int main(int argc, char **argv)
     }
 
     if (error) {
-        printf("Usage: %s [-pqs] [-d 123] [-l level-file]\n", argv[0]);
-        printf("" \
-               "-p: enable progressive difficulty\n" \
-               "    (increases difficulty every 25 points)\n\n" \
-               "-q: disable 3, 2, 1 countdown\n\n" \
-               "-s: enable sound (terminal bell)\n\n" \
+        printf("Usage: %s [-pqsV] [-d 123] [-l level-file]\n", argv[0]);
+        printf("\n" \
                "-d: set difficulty:\n"\
                "    1 easy\n" \
                "    2 medium\n" \
                "    3 hard\n\n" \
+               "-p: enable progressive difficulty\n" \
+               "    (increases difficulty every 25 points)\n\n" \
                "-l: load level-file.  Leave blank to list levels.\n\n"
+               "-q: disable 3, 2, 1 countdown\n\n" \
+               "-s: enable sound (terminal bell)\n\n" \
                "Controls:\n" \
                "    Movement: WASD, HJKL, Arrow Keys\n"
                "    Pause:    p\n"
