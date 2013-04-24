@@ -127,6 +127,7 @@ void draw_tile(int y, int x, int tile)
     (void) wattrset(game_win, COLOR_PAIR(-tile));
     (void) mvwaddch(game_win, y + 1, x * 2 + 1, display);
     (void) waddch(game_win, display);
+    (void) wattrset(game_win, COLOR_PAIR(-TILE_EMPTY));
 }
 
 /*
