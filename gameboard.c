@@ -45,7 +45,9 @@ bool load_level(char *filename, struct game_board *board)
 
         /* Throw away any additional characters beyond the line size limit */
         while (strchr(line, '\n') == NULL) {
-            fgets(line, sizeof line, f);
+            if (fgets(line, sizeof line, f) == NULL) {
+                break;
+            }
         }
     }
     fclose(f);
