@@ -1,5 +1,5 @@
 bin=terminibbles
-version=1.0
+version=1.1
 distname=$(bin)-$(version)
 
 PREFIX ?= /usr/local
@@ -7,7 +7,7 @@ BINDIR ?= $(PREFIX)/bin
 LEVELDIR ?= $(PREFIX)/share/$(bin)/levels
 MANDIR ?= $(PREFIX)/share/man
 
-CFLAGS=-Wall -lncurses -D'LEVEL_DIR="$(LEVELDIR)"' -D'VERSION="$(version)"'
+CFLAGS += -Wall -lncurses -D'LEVEL_DIR="$(LEVELDIR)"' -D'VERSION="$(version)"'
 
 tnibbles_src=gameboard.c terminibbles.c
 tnibbles_obj=$(tnibbles_src:.c=.o)
