@@ -34,6 +34,11 @@
 #define LEVEL_DIR "./levels"
 #endif
 
+/* Highscore file */
+#ifndef SCORE_FILE
+#define SCORE_FILE CONFIG_FOLDER "/score"
+#endif
+
 char *difficulties[] = {
     "Easy",
     "Medium",
@@ -151,6 +156,33 @@ void draw_board()
 void draw_score()
 {
     mvwprintw(game_win, 0, BOARD_W * 2 - 20, "| Score: %4d |", score);
+}
+
+/*
+ * Save the player's score to disk
+ */
+void save_score()
+{
+    FILE *f = fopen(SCORE_FILE, "w");
+    fprintf(f, "%d", score);
+    fclose(f);
+}
+
+/*
+ * Read the player's highscore
+ */
+int get_highscore()
+{
+    int highscore;
+    FILE *f = fopen(SCORE_FILE, "r");
+    if (f == NULL) {
+        return 0;
+    }
+
+    fscanf(f, "%d", &highscore);
+    fclose(f);
+
+    return highscore;
 }
 
 /*
@@ -455,9 +487,24 @@ int main(int argc, char **argv)
     }
 
     endwin();
+
+    int highscore = get_highscore();
+    bool new_highscore = false;
+    if (score > highscore) {
+        new_highscore = true;
+        save_score();
+    }
+
     printf("Game Over!\n");
     printf("Difficulty: %s\n", difficulties[difficulty]);
     printf("Score: %d\n", score);
+
+    if (new_highscore) {
+        printf("Highscore: %d NEW!\n", score);
+    } else {
+        printf("Highscore: %d\n", highscore);
+    }
+
     if (score == 0) {
         printf("...seriously?  Zero points?\n");
     }
