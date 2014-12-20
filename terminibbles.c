@@ -37,6 +37,10 @@
 /* Highscore file */
 #ifndef SCORE_FILE
 #define SCORE_FILE CONFIG_FOLDER "/score"
+#define SCORE_FILE_EASY SCORE_FILE "_easy"
+#define SCORE_FILE_MEDIUM SCORE_FILE "_medium"
+#define SCORE_FILE_HARD SCORE_FILE "_hard"
+#define SCORE_FILE_EZSCC SCORE_FILE "_ezscc"
 #endif
 
 char *difficulties[] = {
@@ -44,6 +48,13 @@ char *difficulties[] = {
     "Medium",
     "Hard",
     "Extreme Zesty Sour Cream and Cheddar",
+};
+
+char *score_files[] = {
+    SCORE_FILE_EASY,
+    SCORE_FILE_MEDIUM,
+    SCORE_FILE_HARD,
+    SCORE_FILE_EZSCC
 };
 
 WINDOW *game_win;
@@ -161,9 +172,10 @@ void draw_score()
 /*
  * Save the player's score to disk
  */
-void save_score()
+void save_score(int difficulty)
 {
-    FILE *f = fopen(SCORE_FILE, "w");
+    char *fp = score_files[difficulty];
+    FILE *f = fopen(fp, "w");
     fprintf(f, "%d", score);
     fclose(f);
 }
@@ -171,10 +183,11 @@ void save_score()
 /*
  * Read the player's highscore
  */
-int get_highscore()
+int get_highscore(int difficulty)
 {
     int highscore;
-    FILE *f = fopen(SCORE_FILE, "r");
+    char *fp = score_files[difficulty];
+    FILE *f = fopen(fp, "r");
     if (f == NULL) {
         return 0;
     }
@@ -488,11 +501,11 @@ int main(int argc, char **argv)
 
     endwin();
 
-    int highscore = get_highscore();
+    int highscore = get_highscore(difficulty);
     bool new_highscore = false;
     if (score > highscore) {
         new_highscore = true;
-        save_score();
+        save_score(difficulty);
     }
 
     printf("Game Over!\n");
