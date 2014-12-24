@@ -1,5 +1,5 @@
 bin=terminibbles
-version=1.1
+version=1.2
 distname=$(bin)-$(version)
 
 PREFIX ?= /usr/local
