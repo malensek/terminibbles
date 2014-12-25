@@ -458,7 +458,7 @@ int main(int argc, char **argv)
         int err1 = errno;
 
         /* Try the system level directory */
-        char name[NAME_MAX];
+        char name[PATH_MAX] = {};
         strcat(name, LEVEL_DIR);
         strcat(name, "/");
         strcat(name, level_name);
