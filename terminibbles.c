@@ -278,6 +278,31 @@ void cleanup()
 }
 
 /*
+ * Determines where the user configuration directory is located. (Usually
+ * $HOME/.config/terminibbles). Includes the trailing slash character.
+ */
+void conf_dir(char *buffer) {
+    char *dir;
+    char *subdir = "/";
+
+    dir = getenv("XDG_CONFIG_HOME");
+    if (dir != NULL) {
+        subdir = "/terminibbles/";
+    } else {
+        dir = getenv("HOME");
+        if (dir != NULL) {
+            subdir = "/.config/terminibbles/";
+        } else {
+            /* Fallback */
+            dir = "./scores/";
+        }
+    }
+    strcat(buffer, dir);
+    strcat(buffer, subdir);
+}
+
+
+/*
  * Print levels installed in the system level directory.
  */
 void print_levels() {
