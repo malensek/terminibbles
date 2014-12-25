@@ -301,6 +301,29 @@ void conf_dir(char *buffer) {
     strcat(buffer, subdir);
 }
 
+/*
+ * Recursively creates a path (collection of directories). The input path must
+ * contain a trailing slash ('/').
+ */
+void mkpath(const char *path) {
+    char *pathcp = strdup(path);
+    size_t len = strlen(pathcp);
+
+    /* Determine umask */
+    mode_t mask = umask(0);
+    umask(mask);
+    mask = 0777 - mask;
+
+    for (int i = 1; i < len; ++i) {
+        if (pathcp[i] == '/') {
+            pathcp[i] = 0;
+            mkdir(pathcp, mask);
+            pathcp[i] = '/';
+        }
+    }
+
+    free(pathcp);
+}
 
 /*
  * Print levels installed in the system level directory.
