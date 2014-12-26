@@ -34,14 +34,11 @@
 #define LEVEL_DIR "./levels"
 #endif
 
-/* Highscore file */
-#ifndef SCORE_FILE
-#define SCORE_FILE CONFIG_FOLDER "/score"
-#define SCORE_FILE_EASY SCORE_FILE "_easy"
-#define SCORE_FILE_MEDIUM SCORE_FILE "_medium"
-#define SCORE_FILE_HARD SCORE_FILE "_hard"
-#define SCORE_FILE_EZSCC SCORE_FILE "_ezscc"
-#endif
+/* Highscore files */
+#define SCORE_FILE_EASY "score_easy"
+#define SCORE_FILE_MEDIUM "score_medium"
+#define SCORE_FILE_HARD "score_hard"
+#define SCORE_FILE_EZSCC "score_ezscc"
 
 char *difficulties[] = {
     "Easy",
