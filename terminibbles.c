@@ -12,6 +12,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "gameboard.h"
 
@@ -167,35 +168,6 @@ void draw_score()
 }
 
 /*
- * Save the player's score to disk
- */
-void save_score(int difficulty)
-{
-    char *fp = score_files[difficulty];
-    FILE *f = fopen(fp, "w");
-    fprintf(f, "%d", score);
-    fclose(f);
-}
-
-/*
- * Read the player's highscore
- */
-int get_highscore(int difficulty)
-{
-    int highscore;
-    char *fp = score_files[difficulty];
-    FILE *f = fopen(fp, "r");
-    if (f == NULL) {
-        return 0;
-    }
-
-    fscanf(f, "%d", &highscore);
-    fclose(f);
-
-    return highscore;
-}
-
-/*
  * Write a fancy title splash screen using gameboard pieces.
  */
 void splash()
@@ -322,6 +294,46 @@ void mkpath(const char *path)
     }
 
     free(pathcp);
+}
+
+/*
+ * Read the player's highscore
+ */
+int read_highscore(int difficulty)
+{
+    char fp[PATH_MAX] = {};
+    conf_dir(fp);
+    strcat(fp, score_files[difficulty]);
+    printf("reading: %s", fp);
+
+    FILE *f = fopen(fp, "r");
+    if (f == NULL) {
+        return 0;
+    }
+
+    int highscore;
+    fscanf(f, "%d", &highscore);
+    fclose(f);
+
+    return highscore;
+}
+
+/*
+ * Save the player's score to disk
+ */
+void write_highscore(int difficulty)
+{
+    char fp[PATH_MAX] = {};
+    conf_dir(fp);
+    mkpath(fp);
+    strcat(fp, score_files[difficulty]);
+
+    FILE *f = fopen(fp, "w");
+    if (f == NULL) {
+        return;
+    }
+    fprintf(f, "%d", score);
+    fclose(f);
 }
 
 /*
@@ -548,11 +560,11 @@ int main(int argc, char **argv)
 
     endwin();
 
-    int highscore = get_highscore(difficulty);
+    int highscore = read_highscore(difficulty);
     bool new_highscore = false;
     if (score > highscore) {
         new_highscore = true;
-        save_score(difficulty);
+        write_highscore(difficulty);
     }
 
     printf("Game Over!\n");
