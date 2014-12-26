@@ -36,6 +36,7 @@ tar: clean
 clean:
 	rm -f $(tnibbles_obj)
 	rm -f makefile.bak
+	rm -f $(distname)
 	rm -f $(distname).tar.gz
 	rm -f $(bin)
 
