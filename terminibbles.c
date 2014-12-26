@@ -572,9 +572,9 @@ int main(int argc, char **argv)
     printf("Score: %d\n", score);
 
     if (new_highscore) {
-        printf("Highscore: %d NEW!\n", score);
+        printf("High score: %d NEW!\n", score);
     } else {
-        printf("Highscore: %d\n", highscore);
+        printf("High score: %d\n", highscore);
     }
 
     if (score == 0) {
