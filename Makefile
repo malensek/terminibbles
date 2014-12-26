@@ -12,7 +12,7 @@ CFLAGS += -Wall -lncurses -D'LEVEL_DIR="$(LEVELDIR)"' -D'VERSION="$(version)"'
 tnibbles_src=gameboard.c terminibbles.c
 tnibbles_obj=$(tnibbles_src:.c=.o)
 distrib=$(tnibbles_src) gameboard.h terminibbles.1 levels \
-		LICENSE.txt LEVELS.txt README.md Makefile
+		LICENSE.txt LEVELS.md README.md Makefile
 
 all: $(bin)
 
