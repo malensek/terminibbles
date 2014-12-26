@@ -303,8 +303,8 @@ void conf_dir(char *buffer)
 }
 
 /*
- * Recursively creates a path (collection of directories). The input path must
- * contain a trailing slash ('/').
+ * Recursively creates a path (collection of directories/subdirectories).
+ * The input path must contain a trailing slash ('/').
  */
 void mkpath(const char *path)
 {
