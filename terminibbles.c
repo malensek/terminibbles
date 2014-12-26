@@ -285,7 +285,8 @@ void mkpath(const char *path)
     umask(mask);
     mask = 0777 - mask;
 
-    for (int i = 1; i < len; ++i) {
+    int i;
+    for (i = 1; i < len; ++i) {
         if (pathcp[i] == '/') {
             pathcp[i] = 0;
             mkdir(pathcp, mask);
