@@ -304,7 +304,6 @@ int read_highscore(int difficulty)
     char fp[PATH_MAX] = {};
     conf_dir(fp);
     strcat(fp, score_files[difficulty]);
-    printf("reading: %s", fp);
 
     FILE *f = fopen(fp, "r");
     if (f == NULL) {
