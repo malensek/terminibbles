@@ -281,7 +281,8 @@ void cleanup()
  * Determines where the user configuration directory is located. (Usually
  * $HOME/.config/terminibbles). Includes the trailing slash character.
  */
-void conf_dir(char *buffer) {
+void conf_dir(char *buffer)
+{
     char *dir;
     char *subdir = "/";
 
@@ -305,7 +306,8 @@ void conf_dir(char *buffer) {
  * Recursively creates a path (collection of directories). The input path must
  * contain a trailing slash ('/').
  */
-void mkpath(const char *path) {
+void mkpath(const char *path)
+{
     char *pathcp = strdup(path);
     size_t len = strlen(pathcp);
 
