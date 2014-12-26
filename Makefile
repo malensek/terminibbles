@@ -1,14 +1,13 @@
 bin=terminibbles
-version=1.2
+version=1.3
 distname=$(bin)-$(version)
 
 PREFIX ?= /usr/local
 BINDIR ?= $(PREFIX)/bin
-CONFIG_FOLDER ?= $(HOME)/.config/$(bin)
 LEVELDIR ?= $(PREFIX)/share/$(bin)/levels
 MANDIR ?= $(PREFIX)/share/man
 
-CFLAGS += -Wall -lncurses -D'LEVEL_DIR="$(LEVELDIR)"' -D'VERSION="$(version)"' -D'CONFIG_FOLDER="$(CONFIG_FOLDER)"'
+CFLAGS += -Wall -lncurses -D'LEVEL_DIR="$(LEVELDIR)"' -D'VERSION="$(version)"'
 
 tnibbles_src=gameboard.c terminibbles.c
 tnibbles_obj=$(tnibbles_src:.c=.o)
@@ -18,7 +17,6 @@ distrib=$(tnibbles_src) gameboard.h terminibbles.1 levels \
 all: $(bin)
 
 $(bin): $(tnibbles_obj)
-	mkdir -p $(CONFIG_FOLDER)
 	$(CC) $(CFLAGS) $(tnibbles_obj) -o $@
 
 install: all
