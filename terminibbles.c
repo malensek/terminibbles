@@ -364,6 +364,7 @@ void print_usage(char *binary)
 {
     printf("Usage: %s [-pqsV] [-d 123] [-l level-file]\n", binary);
     printf("\n" \
+           "-h: show the help message (this message)\n\n"\
            "-d: set difficulty:\n"\
            "    1 easy\n" \
            "    2 medium\n" \
@@ -392,7 +393,7 @@ int main(int argc, char **argv)
     bool error = false; /* flag for showing usage information */
     opterr = 0; /* prevents getopt from displaying its own error messages */
 
-    while ((flag = getopt(argc, argv, "d:l:pqsV")) != -1 && !error) {
+    while ((flag = getopt(argc, argv, "d:l:pqshV")) != -1 && !error) {
         switch (flag) {
         case 'd':
             difficulty = atoi(optarg);
@@ -416,6 +417,10 @@ int main(int argc, char **argv)
         case 's':
             sound = true;
             break;
+
+        case 'h':
+            print_usage(argv[0]);
+            return EXIT_SUCCESS;
 
         case 'V':
             printf("terminibbles %s\n", VERSION);
