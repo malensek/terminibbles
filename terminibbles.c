@@ -380,7 +380,7 @@ void print_highscores()
  */
 void print_usage(char *binary)
 {
-    printf("Usage: %s [-pqsV] [-d 123] [-l level-file]\n", binary);
+    printf("Usage: %s [-pqshHV] [-d 123] [-l level-file]\n", binary);
     printf("\n" \
            "-h: show the help message (this message)\n\n"\
            "-d: set difficulty:\n"\
@@ -393,6 +393,7 @@ void print_usage(char *binary)
            "-q: disable 3, 2, 1 countdown\n\n" \
            "-s: enable sound (terminal bell)\n\n" \
            "-H: list your highscores.\n\n"\
+           "-V: print the version info and exit.\n\n"\
            "Controls:\n" \
            "    Movement: WASD, HJKL, Arrow Keys\n"
            "    Pause:    p\n"
