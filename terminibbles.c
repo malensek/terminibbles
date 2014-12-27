@@ -358,6 +358,24 @@ void print_levels() {
 }
 
 /*
+ * Print the users highscores.
+ */
+void print_highscores()
+{
+    printf("Highscores:\n");
+
+    int difficulty;
+    for (difficulty = 0; difficulty < 4; difficulty++) {
+        char *name = difficulties[difficulty];
+        int score = read_highscore(difficulty);
+
+        if (score > 0) {
+            printf("%s: %d\n", name, score);
+        }
+    }
+}
+
+/*
  * Print the command line usage
  */
 void print_usage(char *binary)
@@ -374,6 +392,7 @@ void print_usage(char *binary)
            "-l: load level-file.  Leave blank to list levels.\n\n"
            "-q: disable 3, 2, 1 countdown\n\n" \
            "-s: enable sound (terminal bell)\n\n" \
+           "-H: list your highscores.\n\n"\
            "Controls:\n" \
            "    Movement: WASD, HJKL, Arrow Keys\n"
            "    Pause:    p\n"
@@ -393,7 +412,7 @@ int main(int argc, char **argv)
     bool error = false; /* flag for showing usage information */
     opterr = 0; /* prevents getopt from displaying its own error messages */
 
-    while ((flag = getopt(argc, argv, "d:l:pqshV")) != -1 && !error) {
+    while ((flag = getopt(argc, argv, "d:l:pqshHV")) != -1 && !error) {
         switch (flag) {
         case 'd':
             difficulty = atoi(optarg);
@@ -417,6 +436,10 @@ int main(int argc, char **argv)
         case 's':
             sound = true;
             break;
+
+        case 'H':
+            print_highscores();
+            return EXIT_SUCCESS;
 
         case 'h':
             print_usage(argv[0]);
