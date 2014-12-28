@@ -357,6 +357,50 @@ void print_levels() {
     }
 }
 
+/*
+ * Print the users highscores.
+ */
+void print_highscores()
+{
+    printf("Highscores:\n");
+
+    int difficulty;
+    for (difficulty = 0; difficulty < 4; difficulty++) {
+        char *name = difficulties[difficulty];
+        int score = read_highscore(difficulty);
+
+        if (score > 0) {
+            printf("%s: %d\n", name, score);
+        }
+    }
+}
+
+/*
+ * Print the command line usage
+ */
+void print_usage(char *binary)
+{
+    printf("Usage: %s [-pqshHV] [-d 123] [-l level-file]\n", binary);
+    printf("\n" \
+           "-h: show the help message (this message)\n\n"\
+           "-d: set difficulty:\n"\
+           "    1 easy\n" \
+           "    2 medium\n" \
+           "    3 hard\n\n" \
+           "-p: enable progressive difficulty\n" \
+           "    (increases difficulty every 25 points)\n\n" \
+           "-l: load level-file.  Leave blank to list levels.\n\n"
+           "-q: disable 3, 2, 1 countdown\n\n" \
+           "-s: enable sound (terminal bell)\n\n" \
+           "-H: list your highscores.\n\n"\
+           "-V: print the version info and exit.\n\n"\
+           "Controls:\n" \
+           "    Movement: WASD, HJKL, Arrow Keys\n"
+           "    Pause:    p\n"
+           "    Quit:     q\n\n"
+           "");
+}
+
 int main(int argc, char **argv)
 {
     int difficulty = 1;
@@ -369,7 +413,7 @@ int main(int argc, char **argv)
     bool error = false; /* flag for showing usage information */
     opterr = 0; /* prevents getopt from displaying its own error messages */
 
-    while ((flag = getopt(argc, argv, "d:l:pqsV")) != -1 && !error) {
+    while ((flag = getopt(argc, argv, "d:l:pqshHV")) != -1 && !error) {
         switch (flag) {
         case 'd':
             difficulty = atoi(optarg);
@@ -393,6 +437,14 @@ int main(int argc, char **argv)
         case 's':
             sound = true;
             break;
+
+        case 'H':
+            print_highscores();
+            return EXIT_SUCCESS;
+
+        case 'h':
+            print_usage(argv[0]);
+            return EXIT_SUCCESS;
 
         case 'V':
             printf("terminibbles %s\n", VERSION);
@@ -421,22 +473,7 @@ int main(int argc, char **argv)
     }
 
     if (error) {
-        printf("Usage: %s [-pqsV] [-d 123] [-l level-file]\n", argv[0]);
-        printf("\n" \
-               "-d: set difficulty:\n"\
-               "    1 easy\n" \
-               "    2 medium\n" \
-               "    3 hard\n\n" \
-               "-p: enable progressive difficulty\n" \
-               "    (increases difficulty every 25 points)\n\n" \
-               "-l: load level-file.  Leave blank to list levels.\n\n"
-               "-q: disable 3, 2, 1 countdown\n\n" \
-               "-s: enable sound (terminal bell)\n\n" \
-               "Controls:\n" \
-               "    Movement: WASD, HJKL, Arrow Keys\n"
-               "    Pause:    p\n"
-               "    Quit:     q\n\n"
-               "");
+        print_usage(argv[0]);
         return EXIT_FAILURE;
     }
 
