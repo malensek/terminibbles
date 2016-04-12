@@ -7,7 +7,8 @@ BINDIR ?= $(PREFIX)/bin
 LEVELDIR ?= $(PREFIX)/share/$(bin)/levels
 MANDIR ?= $(PREFIX)/share/man
 
-CFLAGS += -Wall -lncurses -D'LEVEL_DIR="$(LEVELDIR)"' -D'VERSION="$(version)"'
+CFLAGS += -Wall -D'LEVEL_DIR="$(LEVELDIR)"' -D'VERSION="$(version)"'
+LDFLAGS += -lncurses
 
 tnibbles_src=gameboard.c terminibbles.c
 tnibbles_obj=$(tnibbles_src:.c=.o)
@@ -17,7 +18,7 @@ distrib=$(tnibbles_src) gameboard.h terminibbles.1 levels \
 all: $(bin)
 
 $(bin): $(tnibbles_obj)
-	$(CC) $(CFLAGS) $(tnibbles_obj) -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $(tnibbles_obj) -o $@
 
 install: all
 	install -d $(DESTDIR)/$(BINDIR)
