@@ -16,6 +16,10 @@ The default install directory is /usr/local. If you want to change this, set the
 ```
 PREFIX=$HOME/.local make install
 ```
+If you're running Homebrew, you can also install via:
+```
+brew install malensek/brew/terminibbles
+```
 
 Changelog
 ---------
